@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Cuántos leads estás perdiendo? — Smartflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0e0e0e;
+  --paper: #f5f2ec;
+  --blue: #2563eb;
+  --blue-light: #eff4ff;
+  --blue-mid: #93aff5;
+  --muted: #888076;
+  --border: rgba(14,14,14,0.12);
+  --radius: 16px;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --red: #dc2626;
+  --amber: #d97706;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 3rem;
+  background: rgba(245,242,236,0.85); backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid var(--border);
+}
+.logo { font-family: 'Instrument Serif', serif; font-size: 22px; letter-spacing: -.02em; color: var(--ink); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); display: inline-block; }
+.nav-pill { font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--blue); background: var(--blue-light); padding: 5px 14px; border-radius: 50px; border: 0.5px solid rgba(37,99,235,.2); }
+
+/* HERO */
+.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 8rem 2rem 5rem; position: relative; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 55% 50% at 65% 35%, rgba(37,99,235,0.09) 0%, transparent 70%), radial-gradient(ellipse 40% 55% at 15% 75%, rgba(37,99,235,0.05) 0%, transparent 60%); }
+.hero-grid { position: absolute; inset: 0; z-index: 0; opacity: .4; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%); }
+.hero-content { position: relative; z-index: 1; max-width: 680px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--blue); font-weight: 500; margin-bottom: 1.75rem; opacity: 0; animation: fadeUp .6s .1s ease forwards; }
+.eyebrow::before, .eyebrow::after { content: ''; width: 24px; height: 1px; background: var(--blue); }
+h1 { font-family: 'Instrument Serif', serif; font-size: clamp(44px, 6.5vw, 78px); line-height: 1.06; letter-spacing: -.03em; color: var(--ink); margin-bottom: 1.5rem; font-weight: 400; opacity: 0; animation: fadeUp .7s .25s ease forwards; }
+h1 em { font-style: italic; color: var(--blue); }
+.hero-sub { font-size: 18px; color: var(--muted); max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.7; font-weight: 300; opacity: 0; animation: fadeUp .7s .4s ease forwards; }
+.hero-arrow { opacity: 0; animation: fadeUp .7s .55s ease forwards; display: inline-flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; text-decoration: none; transition: color .2s; }
+.hero-arrow:hover { color: var(--blue); }
+.arrow-circle { width: 40px; height: 40px; border-radius: 50%; border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; transition: border-color .2s; animation: bounce 2s 1.5s ease-in-out infinite; }
+.hero-arrow:hover .arrow-circle { border-color: var(--blue); }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
+.hero-stats { display: flex; justify-content: center; gap: 3.5rem; margin-top: 5rem; padding-top: 2.5rem; border-top: 0.5px solid var(--border); opacity: 0; animation: fadeUp .7s .7s ease forwards; }
+.stat-num { font-family: 'Instrument Serif', serif; font-size: 38px; letter-spacing: -.03em; color: var(--ink); line-height: 1; }
+.stat-lbl { font-size: 13px; color: var(--muted); margin-top: 4px; font-weight: 300; }
+
+/* SHARED */
+.section-wrap { max-width: 760px; margin: 0 auto; padding: 7rem 2rem; }
+.section-tag { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--blue); font-weight: 500; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 10px; }
+.section-tag::after { content: ''; flex: 1; height: 0.5px; background: var(--border); max-width: 80px; }
+
+/* CALCULATOR */
+.q-block { margin-bottom: 2.5rem; }
+.q-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .7rem; }
+.q-text { font-size: 15px; font-weight: 500; color: var(--ink); }
+.q-meta { display: flex; align-items: baseline; gap: .75rem; }
+.q-num { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 13px; color: var(--muted); }
+.q-val { font-size: 15px; font-weight: 500; color: var(--blue); min-width: 64px; text-align: right; }
+.q-hint { font-size: 12px; color: var(--muted); margin-top: .35rem; }
+input[type=range] { width: 100%; -webkit-appearance: none; height: 2px; background: rgba(37,99,235,.18); border-radius: 1px; outline: none; cursor: pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--blue); border: 3px solid var(--paper); box-shadow: 0 0 0 1px var(--blue); cursor: pointer; transition: transform .15s; }
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.q-divider { border: none; border-top: 0.5px solid var(--border); margin: 2.5rem 0; }
+.run-btn { width: 100%; padding: .95rem; background: var(--ink); color: var(--paper); border: none; border-radius: 50px; font-size: 15px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .15s; }
+.run-btn:hover { background: var(--blue); transform: translateY(-1px); }
+.run-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* RESULTS */
+.results-wrap { display: none; border-top: 0.5px solid var(--border); }
+.results-wrap.show { display: block; }
+.generating { display: none; text-align: center; padding: 5rem 2rem; }
+.generating.show { display: block; }
+.spinner { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); border-top-color: var(--blue); animation: spin .8s linear infinite; margin: 0 auto 1.25rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.gen-lbl { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 16px; color: var(--muted); }
+.results-content { display: none; }
+.results-content.show { display: block; }
+
+/* LOSS HERO */
+.loss-hero { background: var(--paper); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 3rem 2.5rem; text-align: center; margin-bottom: 2rem; position: relative; overflow: hidden; box-shadow: 0 2px 24px rgba(220,38,38,.07); }
+.loss-glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(220,38,38,.13) 0%, transparent 70%); }
+.loss-label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink); font-weight: 500; margin-bottom: 1rem; position: relative; }
+.loss-amount { font-family: 'Instrument Serif', serif; font-size: clamp(52px, 8vw, 96px); letter-spacing: -.04em; color: var(--red); line-height: 1; margin-bottom: .5rem; position: relative; }
+.loss-period { font-size: 14px; color: var(--ink); position: relative; font-weight: 300; }
+
+/* SPEEDOMETER */
+.speed-box { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 20px rgba(0,0,0,.04); display: flex; align-items: center; gap: 2rem; }
+.speed-svg-wrap { flex-shrink: 0; }
+.speed-info { flex: 1; }
+.speed-title { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: .4rem; }
+.speed-score { font-family: 'Instrument Serif', serif; font-size: 32px; letter-spacing: -.02em; margin-bottom: .4rem; }
+.speed-desc { font-size: 13px; color: var(--muted); line-height: 1.5; font-weight: 300; }
+
+/* METRICS */
+.metrics-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 2rem; }
+.metric-cell { background: var(--paper); padding: 1.5rem 1.25rem; text-align: center; }
+.m-num { font-family: 'Instrument Serif', serif; font-size: 32px; letter-spacing: -.03em; color: var(--blue); line-height: 1; margin-bottom: .35rem; }
+.m-lbl { font-size: 12px; color: var(--muted); line-height: 1.4; font-weight: 300; }
+
+/* FUNNEL */
+.funnel-box { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 20px rgba(0,0,0,.04); }
+.funnel-title { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 1.5rem; }
+.funnel-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.funnel-col-label { font-size: 12px; font-weight: 500; text-align: center; margin-bottom: 1rem; padding: 4px 12px; border-radius: 50px; display: inline-block; }
+.funnel-col-label.now { background: #fef2f2; color: var(--red); }
+.funnel-col-label.ai { background: var(--blue-light); color: var(--blue); }
+.funnel-step { margin-bottom: 8px; }
+.funnel-bar-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+.funnel-bar-bg { flex: 1; height: 8px; background: rgba(14,14,14,.07); border-radius: 4px; overflow: hidden; }
+.funnel-bar-fill { height: 8px; border-radius: 4px; width: 0; transition: width 1s cubic-bezier(.22,1,.36,1); }
+.funnel-bar-fill.red { background: var(--red); }
+.funnel-bar-fill.blue { background: var(--blue); }
+.funnel-bar-fill.green { background: var(--green); }
+.funnel-bar-num { font-size: 13px; font-weight: 500; min-width: 28px; text-align: right; }
+.funnel-bar-lbl { font-size: 11px; color: var(--muted); }
+
+/* AI DIAGNOSIS */
+.ai-box { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; position: relative; box-shadow: 0 2px 20px rgba(0,0,0,.04); }
+.ai-tag { position: absolute; top: -1px; left: 1.75rem; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; background: var(--blue); color: #fff; font-weight: 500; padding: 3px 10px; border-radius: 0 0 8px 8px; }
+.diag-text { font-size: 15px; color: var(--ink); line-height: 1.75; font-weight: 300; padding-top: .75rem; margin-bottom: 1.5rem; }
+.cursor { display: inline-block; width: 2px; height: 1em; background: var(--blue); animation: blink .7s ease infinite; vertical-align: text-bottom; margin-left: 1px; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* PLAN */
+.plan-section { margin-top: 1.5rem; border-top: 0.5px solid var(--border); padding-top: 1.5rem; }
+.plan-title { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 1.25rem; }
+.plan-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.plan-card { border-radius: 12px; padding: 1.25rem; border: 0.5px solid var(--border); }
+.plan-card.week1 { background: #fef2f2; border-color: rgba(220,38,38,.15); }
+.plan-card.month1 { background: #fffbeb; border-color: rgba(217,119,6,.15); }
+.plan-card.month3 { background: var(--green-light); border-color: rgba(22,163,74,.15); }
+.plan-card-label { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 500; margin-bottom: .6rem; }
+.plan-card.week1 .plan-card-label { color: var(--red); }
+.plan-card.month1 .plan-card-label { color: var(--amber); }
+.plan-card.month3 .plan-card-label { color: var(--green); }
+.plan-card-title { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: .5rem; line-height: 1.3; }
+.plan-actions { list-style: none; }
+.plan-actions li { font-size: 12px; color: var(--muted); padding: 3px 0; line-height: 1.5; display: flex; gap: 6px; align-items: flex-start; font-weight: 300; }
+.plan-actions li::before { content: '→'; font-size: 11px; margin-top: 1px; flex-shrink: 0; }
+.plan-card.week1 .plan-actions li::before { color: var(--red); }
+.plan-card.month1 .plan-actions li::before { color: var(--amber); }
+.plan-card.month3 .plan-actions li::before { color: var(--green); }
+
+/* ROI CHART */
+.roi-box { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 20px rgba(0,0,0,.04); }
+.roi-title { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 1.5rem; }
+.roi-bars { display: flex; align-items: flex-end; gap: 10px; height: 120px; margin-bottom: .75rem; }
+.roi-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+.roi-bar { width: 100%; border-radius: 6px 6px 0 0; background: var(--blue-light); border: 0.5px solid rgba(37,99,235,.2); transition: height 1s cubic-bezier(.22,1,.36,1); position: relative; min-height: 4px; }
+.roi-bar.highlight { background: var(--blue); border-color: var(--blue); }
+.roi-bar-val { font-size: 11px; font-weight: 500; color: var(--blue); }
+.roi-labels { display: flex; gap: 10px; }
+.roi-label { flex: 1; text-align: center; font-size: 11px; color: var(--muted); }
+
+/* WHATSAPP CTA */
+.wa-cta { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2.5rem; text-align: center; box-shadow: 0 2px 20px rgba(0,0,0,.04); }
+.wa-cta-tag { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; background: #dcfce7; color: #16a34a; border: 0.5px solid #bbf7d0; padding: 4px 12px; border-radius: 50px; display: inline-block; margin-bottom: 1.25rem; font-weight: 500; }
+.wa-cta h3 { font-family: 'Instrument Serif', serif; font-size: clamp(22px, 3vw, 30px); color: var(--ink); margin-bottom: .6rem; letter-spacing: -.02em; }
+.wa-cta p { font-size: 15px; color: var(--muted); margin-bottom: 1.75rem; font-weight: 300; line-height: 1.65; max-width: 440px; margin-left: auto; margin-right: auto; }
+.btn-wa { display: inline-flex; align-items: center; gap: 10px; padding: 1rem 2rem; background: #16a34a; color: #fff; border: none; border-radius: 50px; font-size: 16px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; text-decoration: none; transition: background .2s, transform .15s; }
+.btn-wa:hover { background: #15803d; transform: translateY(-2px); }
+.wa-note { font-size: 12px; color: var(--muted); margin-top: 1rem; font-weight: 300; }
+
+/* PRINT BAR */
+.print-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--blue-light); border: 0.5px solid rgba(37,99,235,.2);
+  border-radius: var(--radius); padding: 1.25rem 1.75rem;
+  margin-bottom: 2rem; gap: 1.5rem;
+}
+.print-bar-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+.print-bar-sub { font-size: 13px; color: var(--muted); font-weight: 300; }
+.btn-print {
+  display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;
+  padding: .7rem 1.5rem; background: var(--blue); color: #fff;
+  border: none; border-radius: 50px; font-size: 14px; font-weight: 500;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity .2s;
+  white-space: nowrap;
+}
+.btn-print:hover { opacity: .85; }
+
+/* PRINT STYLES */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #fff !important; font-size: 13px; }
+  nav, .hero, #calc, .generating, .print-bar, .wa-cta, footer, .run-btn { display: none !important; }
+  .results-wrap { display: block !important; border: none; }
+  .results-content { display: block !important; }
+  .section-wrap { padding: 1.5rem 1.5rem 0; max-width: 100%; }
+  .section-tag { margin-bottom: 1rem; }
+  .loss-hero { padding: 1.5rem; margin-bottom: 1rem; }
+  .loss-amount { font-size: 52px; }
+  .speed-box, .funnel-box, .ai-box, .roi-box { margin-bottom: 1rem; padding: 1.25rem; box-shadow: none; break-inside: avoid; }
+  .metrics-row { margin-bottom: 1rem; }
+  .plan-cards { gap: 8px; }
+  .plan-card { padding: 1rem; }
+  .roi-bars { height: 80px; }
+  .print-header { display: block !important; }
+}
+.print-header {
+  display: none;
+  padding: 1.5rem 0 1rem;
+  border-bottom: 0.5px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.print-header-logo { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--ink); margin-bottom: .25rem; }
+.print-header-sub { font-size: 12px; color: var(--muted); }
+
+/* FOOTER */
+footer { border-top: 0.5px solid var(--border); padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+.f-logo { font-family: 'Instrument Serif', serif; font-size: 17px; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 7px; }
+footer p { font-size: 12px; color: var(--muted); font-weight: 300; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media(max-width:640px){
+  nav { padding: 1rem 1.5rem; }
+  .hero { padding: 7rem 1.5rem 4rem; }
+  .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+  .section-wrap { padding: 4rem 1.5rem; }
+  .metrics-row { grid-template-columns: 1fr; }
+  .plan-cards { grid-template-columns: 1fr; }
+  .funnel-cols { grid-template-columns: 1fr; }
+  .speed-box { flex-direction: column; text-align: center; }
+  footer { flex-direction: column; gap: .5rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo"><span class="logo-dot"></span>Smartflow</a>
+  <span class="nav-pill">Para inmobiliarias</span>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="eyebrow">Calculadora de leads perdidos</div>
+    <h1>¿Cuánto dinero<br>estás dejando<br><em>sobre la mesa?</em></h1>
+    <p class="hero-sub">El 78% de los compradores elige al agente que responde primero. Calcula en segundos cuántas comisiones estás perdiendo por tiempo de respuesta.</p>
+    <a href="#calc" class="hero-arrow">
+      <div class="arrow-circle">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M3 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      Calcular ahora
+    </a>
+    <div class="hero-stats">
+      <div><div class="stat-num">78%</div><div class="stat-lbl">compra con quien responde primero</div></div>
+      <div><div class="stat-num">20 min</div><div class="stat-lbl">ventana crítica de respuesta</div></div>
+      <div><div class="stat-num">10×</div><div class="stat-lbl">más conversión en menos de 5 min</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-wrap" id="calc">
+  <div class="section-tag reveal">Tus números</div>
+  <div class="reveal">
+    <div class="q-block">
+      <div class="q-label"><span class="q-text">¿Cuántos leads recibes al mes?</span><div class="q-meta"><span class="q-num">01</span><span class="q-val" id="v1">80</span></div></div>
+      <input type="range" min="10" max="500" step="10" value="80" id="s1" oninput="document.getElementById('v1').textContent=this.value">
+      <div class="q-hint">Suma todos los canales: portales, redes, referidos, web</div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span class="q-text">¿Cuántos agentes tiene tu equipo?</span><div class="q-meta"><span class="q-num">02</span><span class="q-val" id="v2">8</span></div></div>
+      <input type="range" min="1" max="20" step="1" value="8" id="s2" oninput="document.getElementById('v2').textContent=this.value">
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span class="q-text">Tiempo promedio de primera respuesta</span><div class="q-meta"><span class="q-num">03</span><span class="q-val" id="v3">1h 30min</span></div></div>
+      <input type="range" min="5" max="240" step="5" value="90" id="s3" oninput="updateMinutes(this.value)">
+      <div class="q-hint">Desde que entra el lead hasta que alguien lo contacta</div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span class="q-text">¿Qué % de leads cualificas actualmente?</span><div class="q-meta"><span class="q-num">04</span><span class="q-val" id="v4">40%</span></div></div>
+      <input type="range" min="5" max="90" step="5" value="40" id="s4" oninput="document.getElementById('v4').textContent=this.value+'%'">
+      <div class="q-hint">Leads que llegan a una conversación real con un agente</div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span class="q-text">Tasa de cierre sobre leads cualificados</span><div class="q-meta"><span class="q-num">05</span><span class="q-val" id="v5">15%</span></div></div>
+      <input type="range" min="1" max="50" step="1" value="15" id="s5" oninput="document.getElementById('v5').textContent=this.value+(+this.value===50?'%+':'%')">
+      <div class="q-hint">Visitas que terminan en operación cerrada</div>
+    </div>
+    <div class="q-block">
+      <div class="q-label"><span class="q-text">Comisión promedio por operación (USD)</span><div class="q-meta"><span class="q-num">06</span><span class="q-val" id="v6">$3,500</span></div></div>
+      <input type="range" min="500" max="20000" step="500" value="3500" id="s6" oninput="document.getElementById('v6').textContent='$'+Number(this.value).toLocaleString()">
+    </div>
+    <hr class="q-divider">
+    <button class="run-btn" id="run-btn" onclick="runCalc()">Calcular mis leads perdidos →</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-wrap" id="results-wrap">
+  <div class="section-wrap">
+    <div class="section-tag">Tu diagnóstico</div>
+    <div class="print-header">
+      <div class="print-header-logo">Smartflow · Reporte de Leads Perdidos</div>
+      <div class="print-header-sub" id="print-date"></div>
+    </div>
+
+    <div class="generating" id="generating">
+      <div class="spinner"></div>
+      <p class="gen-lbl">Analizando tu situación…</p>
+    </div>
+
+    <div class="results-content" id="results-content">
+
+      <!-- LOSS -->
+      <div class="loss-hero">
+        <div class="loss-glow"></div>
+        <div class="loss-label">Comisiones perdidas al mes</div>
+        <div class="loss-amount" id="r-loss">$0</div>
+        <div class="loss-period">en oportunidades que ya entraron por tu puerta — y se fueron</div>
+      </div>
+
+      <!-- SPEEDOMETER -->
+      <div class="speed-box">
+        <div class="speed-svg-wrap">
+          <svg id="speed-svg" width="140" height="80" viewBox="0 0 140 80">
+            <defs>
+              <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#16a34a"/>
+                <stop offset="40%" stop-color="#d97706"/>
+                <stop offset="100%" stop-color="#dc2626"/>
+              </linearGradient>
+            </defs>
+            <path d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
+            <path id="speed-arc" d="M10 75 A60 60 0 0 1 130 75" fill="none" stroke="url(#sg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="188"/>
+            <line id="speed-needle" x1="70" y1="75" x2="70" y2="22" stroke="#0e0e0e" stroke-width="2.5" stroke-linecap="round" transform="rotate(0 70 75)"/>
+            <circle cx="70" cy="75" r="5" fill="#0e0e0e"/>
+          </svg>
+        </div>
+        <div class="speed-info">
+          <div class="speed-title">Velocidad de respuesta</div>
+          <div class="speed-score" id="speed-score-text">—</div>
+          <div class="speed-desc" id="speed-desc">—</div>
+        </div>
+      </div>
+
+      <!-- METRICS -->
+      <div class="metrics-row">
+        <div class="metric-cell"><div class="m-num" id="r-cold">—</div><div class="m-lbl">leads fríos por mes</div></div>
+        <div class="metric-cell"><div class="m-num" id="r-lost-ops">—</div><div class="m-lbl">operaciones perdidas</div></div>
+        <div class="metric-cell"><div class="m-num" id="r-potential">—</div><div class="m-lbl">ops. extra posibles con IA</div></div>
+      </div>
+
+      <!-- FUNNEL -->
+      <div class="funnel-box">
+        <div class="funnel-title">Embudo actual vs. con agente de IA</div>
+        <div class="funnel-cols">
+          <div>
+            <div style="text-align:center;margin-bottom:1rem"><span class="funnel-col-label now">Ahora</span></div>
+            <div class="funnel-step">
+              <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill red" id="fn1" style="width:100%"></div></div><span class="funnel-bar-num" id="fv1" style="color:var(--ink)">—</span></div>
+              <div class="funnel-bar-lbl">Leads que entran</div>
+            </div>
+            <div class="funnel-step">
+              <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill red" id="fn2"></div></div><span class="funnel-bar-num" style="color:var(--red)" id="fv2">—</span></div>
+              <div class="funnel-bar-lbl">Se enfrían</div>
+            </div>
+            <div class="funnel-step">
+              <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill red" id="fn3"></div></div><span class="funnel-bar-num" style="color:var(--ink)" id="fv3">—</span></div>
+              <div class="funnel-bar-lbl">Cualificados</div>
+            </div>
+            <div class="funnel-step">
+              <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill green" id="fn4"></div></div><span class="funnel-bar-num" style="color:var(--green)" id="fv4">—</span></div>
+              <div class="funnel-bar-lbl">Operaciones cerradas</div>
+            </div>
+          </div>
+          <div>
+            <div style="text-align:center;margin-bottom:1rem"><span class="funnel-col-label ai">Con IA</span></div>
+            <div class="funnel-step">
+              <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill blue" id="fa1" style="width:100%"></div></div><span class="funnel-bar-num" id="av1" style="color:var(--ink)">—</span></div>
+              <div class="funnel-bar-lbl">Leads que entran</div>
+            </div>
+            <div class="funnel-step">
+              <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill blue" id="fa2"></div></div><span class="funnel-bar-num" style="color:var(--blue)" id="av2">—</span></div>
+              <div class="funnel-bar-lbl">Se enfrían (respuesta &lt;1min)</div>
+            </div>
+            <div class="funnel-step">
+              <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill blue" id="fa3"></div></div><span class="funnel-bar-num" style="color:var(--ink)" id="av3">—</span></div>
+              <div class="funnel-bar-lbl">Cualificados por IA</div>
+            </div>
+            <div class="funnel-step">
+              <div class="funnel-bar-wrap"><div class="funnel-bar-bg"><div class="funnel-bar-fill green" id="fa4"></div></div><span class="funnel-bar-num" style="color:var(--green)" id="av4">—</span></div>
+              <div class="funnel-bar-lbl">Operaciones cerradas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI DIAGNOSIS + PLAN -->
+      <div class="ai-box">
+        <span class="ai-tag">Análisis IA</span>
+        <p class="diag-text" id="diag-text"></p>
+
+        <div class="plan-section" id="plan-section" style="display:none">
+          <div class="plan-title">Plan de acción recomendado</div>
+          <div class="plan-cards">
+            <div class="plan-card week1">
+              <div class="plan-card-label">Esta semana</div>
+              <div class="plan-card-title" id="plan-title-1">—</div>
+              <ul class="plan-actions" id="plan-actions-1"></ul>
+            </div>
+            <div class="plan-card month1">
+              <div class="plan-card-label">Este mes</div>
+              <div class="plan-card-title" id="plan-title-2">—</div>
+              <ul class="plan-actions" id="plan-actions-2"></ul>
+            </div>
+            <div class="plan-card month3">
+              <div class="plan-card-label">En 90 días</div>
+              <div class="plan-card-title" id="plan-title-3">—</div>
+              <ul class="plan-actions" id="plan-actions-3"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROI CHART -->
+      <div class="roi-box">
+        <div class="roi-title">ROI proyectado con agente de IA (comisiones extra / mes)</div>
+        <div class="roi-bars" id="roi-bars"></div>
+        <div class="roi-labels" id="roi-labels"></div>
+      </div>
+
+      <!-- DOWNLOAD REPORT -->
+      <div class="print-bar" id="print-bar">
+        <div class="print-bar-left">
+          <div class="print-bar-title">Tu reporte está listo</div>
+          <div class="print-bar-sub">Descárgalo como PDF para compartirlo con tu equipo</div>
+        </div>
+        <button class="btn-print" onclick="downloadReport()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M4 6l4 4 4-4M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Descargar reporte PDF
+        </button>
+      </div>
+
+      <!-- WHATSAPP CTA -->
+      <div class="wa-cta">
+        <span class="wa-cta-tag">Demo en vivo</span>
+        <h3>Ve cómo funciona el agente<br>en tu propio WhatsApp.</h3>
+        <p>Escríbenos ahora y en menos de 60 segundos experimentas exactamente cómo el agente de IA cualificaría a tus leads y agendaría visitas — sin fricción, sin espera.</p>
+        <a id="wa-btn" href="#" target="_blank" rel="noopener" class="btn-wa">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Quiero ver la demo →
+        </a>
+        <div class="wa-note">Respuesta inmediata · Sin compromiso · Solo 5 minutos</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="#" class="f-logo"><span class="logo-dot" style="width:7px;height:7px"></span>Smartflow</a>
+  <p>© 2026 Smartflow. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+function downloadReport() {
+  const dateEl = document.getElementById('print-date');
+  if(dateEl) dateEl.textContent = 'Generado el ' + new Date().toLocaleDateString('es-ES', {day:'numeric',month:'long',year:'numeric'});
+  window.print();
+}
+
+function updateMinutes(v) {
+  const val = +v;
+  if (val >= 240) document.getElementById('v3').textContent = '+4 h';
+  else if (val >= 60) { const h=Math.floor(val/60),m=val%60; document.getElementById('v3').textContent = m>0?h+'h '+m+'min':h+'h'; }
+  else document.getElementById('v3').textContent = val+' min';
+}
+
+function calcNumbers() {
+  const leads = +document.getElementById('s1').value;
+  const agents = +document.getElementById('s2').value;
+  const minutes = +document.getElementById('s3').value;
+  const qualRate = +document.getElementById('s4').value / 100;
+  const closeRate = +document.getElementById('s5').value / 100;
+  const commission = +document.getElementById('s6').value;
+
+  let coldRate;
+  if (minutes < 20) coldRate = 0.08;
+  else if (minutes <= 20) coldRate = 0.25;
+  else if (minutes <= 60) coldRate = 0.25 + ((minutes-20)/40)*0.35;
+  else coldRate = Math.min(0.60 + ((minutes-60)/180)*0.22, 0.82);
+
+  const coldLeads = Math.round(leads * coldRate);
+  const activeLeads = leads - coldLeads;
+  const qualLeads = Math.round(activeLeads * qualRate);
+  const closedOps = Math.round(qualLeads * closeRate);
+  const lostOps = Math.round(coldLeads * qualRate * closeRate);
+  const lostMoney = lostOps * commission;
+
+  const aiColdRate = 0.05;
+  const aiColdLeads = Math.round(leads * aiColdRate);
+  const aiActiveLeads = leads - aiColdLeads;
+  const aiQualLeads = Math.round(aiActiveLeads * Math.min(qualRate * 1.35, 0.85));
+  const aiClosedOps = Math.round(aiQualLeads * closeRate);
+  const potentialExtra = Math.max(aiClosedOps - closedOps, 0);
+
+  let responseScore, responseDesc, needleAngle;
+  if (minutes < 20) { responseScore='Buena'; responseDesc='Estás por debajo de los 20 min críticos. Aun así hay margen de mejora con respuesta instantánea.'; needleAngle=-70; }
+  else if (minutes <= 30) { responseScore='Peligrosa'; responseDesc='Entre 20 y 30 min pierdes más del 25% de tus leads. Cada minuto cuenta.'; needleAngle=-35; }
+  else if (minutes <= 60) { responseScore='Crítica'; responseDesc='A esta velocidad, casi la mitad de tus leads ya eligieron a otro agente antes de que respondas.'; needleAngle=0; }
+  else if (minutes <= 120) { responseScore='Muy lenta'; responseDesc='Más de una hora de respuesta es fatal. 7 de cada 10 leads ya están fríos cuando los contactas.'; needleAngle=40; }
+  else { responseScore='Fatal'; responseDesc='A +4 horas de respuesta estás regalando más del 80% de tus leads a la competencia.'; needleAngle=75; }
+
+  return { leads, agents, minutes, qualRate, closeRate, commission, coldLeads, activeLeads, qualLeads, closedOps, lostOps, lostMoney, potentialExtra, responseScore, responseDesc, needleAngle, aiColdLeads, aiQualLeads, aiClosedOps };
+}
+
+function buildRoiChart(m) {
+  const months = ['Mes 1','Mes 2','Mes 3','Mes 4','Mes 5','Mes 6'];
+  const rampUp = [0.3, 0.55, 0.75, 0.9, 1.0, 1.0];
+  const baseExtra = m.potentialExtra * m.commission;
+  const values = rampUp.map(r => Math.round(baseExtra * r));
+  const maxVal = Math.max(...values, 1);
+
+  const barsEl = document.getElementById('roi-bars');
+  const labelsEl = document.getElementById('roi-labels');
+  barsEl.innerHTML = ''; labelsEl.innerHTML = '';
+
+  values.forEach((val, i) => {
+    const pct = (val / maxVal) * 100;
+    const wrap = document.createElement('div'); wrap.className = 'roi-bar-wrap';
+    const valEl = document.createElement('div'); valEl.className = 'roi-bar-val'; valEl.textContent = val>0?'$'+Math.round(val/1000)+'k':'—';
+    const bar = document.createElement('div'); bar.className = 'roi-bar'+(i===5?' highlight':''); bar.style.height='0px';
+    wrap.appendChild(valEl); wrap.appendChild(bar); barsEl.appendChild(wrap);
+    setTimeout(() => { bar.style.height = Math.max(pct * 1.2, 4)+'px'; }, 400 + i*80);
+
+    const lbl = document.createElement('div'); lbl.className = 'roi-label'; lbl.textContent = months[i];
+    labelsEl.appendChild(lbl);
+  });
+}
+
+function setSpeedometer(m) {
+  const needle = document.getElementById('speed-needle');
+  const arc = document.getElementById('speed-arc');
+  const scoreEl = document.getElementById('speed-score-text');
+  const descEl = document.getElementById('speed-desc');
+
+  const colors = { 'Buena':'#16a34a','Peligrosa':'#d97706','Crítica':'#ea580c','Muy lenta':'#dc2626','Fatal':'#7f1d1d' };
+  scoreEl.textContent = m.responseScore;
+  scoreEl.style.color = colors[m.responseScore] || '#0e0e0e';
+  descEl.textContent = m.responseDesc;
+
+  const pct = Math.min(Math.max((m.needleAngle + 90) / 180, 0), 1);
+  const dashOffset = 188 - (188 * pct);
+  setTimeout(() => {
+    arc.style.transition = 'stroke-dashoffset .8s ease';
+    arc.style.strokeDashoffset = dashOffset;
+    needle.style.transition = 'transform .8s ease';
+    needle.style.transform = `rotate(${m.needleAngle} 70 75)`;
+  }, 200);
+}
+
+function setFunnel(m) {
+  const max = m.leads;
+  const set = (id, val, max) => {
+    const el = document.getElementById(id);
+    if(el) { setTimeout(() => { el.style.width = Math.max((val/max)*100, 3)+'%'; }, 400); }
+  };
+  document.getElementById('fv1').textContent = m.leads; set('fn1', m.leads, max);
+  document.getElementById('fv2').textContent = m.coldLeads; set('fn2', m.coldLeads, max);
+  document.getElementById('fv3').textContent = m.qualLeads; set('fn3', m.qualLeads, max);
+  document.getElementById('fv4').textContent = m.closedOps; set('fn4', m.closedOps, max);
+  document.getElementById('av1').textContent = m.leads; set('fa1', m.leads, max);
+  document.getElementById('av2').textContent = m.aiColdLeads; set('fa2', m.aiColdLeads, max);
+  document.getElementById('av3').textContent = m.aiQualLeads; set('fa3', m.aiQualLeads, max);
+  document.getElementById('av4').textContent = m.aiClosedOps; set('fa4', m.aiClosedOps, max);
+}
+
+async function runCalc() {
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true; btn.textContent = 'Analizando…';
+
+  const m = calcNumbers();
+  const wrap = document.getElementById('results-wrap');
+  wrap.classList.add('show');
+  document.getElementById('generating').classList.add('show');
+  document.getElementById('results-content').classList.remove('show');
+  setTimeout(() => wrap.scrollIntoView({behavior:'smooth', block:'start'}), 100);
+
+  document.getElementById('r-loss').textContent = '$'+m.lostMoney.toLocaleString();
+  document.getElementById('r-cold').textContent = m.coldLeads;
+  document.getElementById('r-lost-ops').textContent = m.lostOps;
+  document.getElementById('r-potential').textContent = '+'+m.potentialExtra;
+
+  const minuteLabel = m.minutes >= 240 ? '+4 horas' : m.minutes >= 60 ? Math.floor(m.minutes/60)+'h '+(m.minutes%60>0?m.minutes%60+'min':'') : m.minutes+' minutos';
+  const msg = encodeURIComponent(`Hola Smartflow, usé la calculadora y estoy perdiendo $${m.lostMoney.toLocaleString()} al mes con ${m.coldLeads} leads fríos. Quiero ver la demo del agente de IA.`);
+  document.getElementById('wa-btn').href = `https://wa.me/50768705458?text=${msg}`;
+
+  const prompt = `Eres el sistema de análisis de Smartflow, consultora de IA para inmobiliarias. Un agente completó la calculadora con estos datos:
+
+- Leads al mes: ${m.leads}
+- Agentes: ${m.agents}
+- Tiempo de primera respuesta: ${minuteLabel}
+- Tasa de cualificación: ${Math.round(m.qualRate*100)}%
+- Tasa de cierre: ${Math.round(m.closeRate*100)}%
+- Comisión promedio: $${m.commission.toLocaleString()}
+
+Resultados:
+- Leads fríos/mes: ${m.coldLeads} (${Math.round(m.coldLeads/m.leads*100)}% del total)
+- Operaciones perdidas/mes: ${m.lostOps}
+- Comisiones perdidas/mes: $${m.lostMoney.toLocaleString()}
+- Velocidad de respuesta: ${m.responseScore}
+- Operaciones extra posibles con IA: +${m.potentialExtra}/mes
+
+Responde ÚNICAMENTE con un JSON válido con esta estructura exacta (sin markdown, sin texto extra):
+{
+  "diagnostico": "2-3 oraciones directas sobre el problema principal de esta agencia específica, mencionando sus números concretos",
+  "fase1": {
+    "titulo": "Título corto de la acción urgente esta semana",
+    "acciones": ["acción concreta 1", "acción concreta 2", "acción concreta 3"]
+  },
+  "fase2": {
+    "titulo": "Título corto de implementación este mes",
+    "acciones": ["acción concreta 1", "acción concreta 2", "acción concreta 3"]
+  },
+  "fase3": {
+    "titulo": "Título corto de optimización a 90 días",
+    "acciones": ["acción concreta 1", "acción concreta 2", "acción concreta 3"]
+  }
+}`;
+
+  try {
+    const res = await fetch('/api/diagnose', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    let plan = null;
+    try {
+      const clean = data.text.replace(/```json|```/g,'').trim();
+      plan = JSON.parse(clean);
+    } catch(e) { plan = null; }
+
+    document.getElementById('generating').classList.remove('show');
+    document.getElementById('results-content').classList.add('show');
+
+    setSpeedometer(m);
+    setFunnel(m);
+    buildRoiChart(m);
+
+    // Typewriter diagnosis
+    const diagEl = document.getElementById('diag-text');
+    diagEl.innerHTML = '<span class="cursor"></span>';
+    const cursor = diagEl.querySelector('.cursor');
+    const diagText = plan ? plan.diagnostico : (data.text || 'No se pudo generar el análisis.');
+    let i = 0;
+    function type() {
+      if(i < diagText.length) { cursor.insertAdjacentText('beforebegin', diagText[i++]); setTimeout(type, 16); }
+      else {
+        cursor.remove();
+        if(plan) {
+          // Render plan cards
+          document.getElementById('plan-title-1').textContent = plan.fase1.titulo;
+          document.getElementById('plan-title-2').textContent = plan.fase2.titulo;
+          document.getElementById('plan-title-3').textContent = plan.fase3.titulo;
+          [plan.fase1.acciones, plan.fase2.acciones, plan.fase3.acciones].forEach((actions, idx) => {
+            const ul = document.getElementById('plan-actions-'+(idx+1));
+            ul.innerHTML = '';
+            actions.forEach(a => { const li = document.createElement('li'); li.textContent = a; ul.appendChild(li); });
+          });
+          document.getElementById('plan-section').style.display = 'block';
+        }
+      }
+    }
+    type();
+
+  } catch(e) {
+    document.getElementById('generating').classList.remove('show');
+    document.getElementById('results-content').classList.add('show');
+    document.getElementById('diag-text').textContent = 'Hubo un problema generando el análisis. Intenta de nuevo.';
+    setSpeedometer(m); setFunnel(m); buildRoiChart(m);
+  }
+
+  btn.disabled = false; btn.textContent = 'Calcular mis leads perdidos →';
+}
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+}, {threshold:.1});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
