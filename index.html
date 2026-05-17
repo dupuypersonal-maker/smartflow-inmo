@@ -234,22 +234,33 @@ footer p { font-size: 12px; color: var(--muted); font-weight: 300; }
       <input type="range" min="1" max="20" step="1" value="8" id="s2" oninput="document.getElementById('v2').textContent=this.value">
     </div>
     <div class="q-block">
-      <div class="q-label"><span class="q-text">Tiempo promedio de primera respuesta</span><div class="q-meta"><span class="q-num">03</span><span class="q-val" id="v3">1h 30min</span></div></div>
+      <div class="q-label"><span class="q-text">¿En qué mercado opera tu agencia?</span><div class="q-meta"><span class="q-num">03</span></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:.6rem">
+        <div class="pill active" id="m-co" onclick="selectMarket('CO')" style="padding:7px 16px;border-radius:50px;font-size:13px;cursor:pointer;border:0.5px solid var(--border);background:var(--blue-light);border-color:rgba(37,99,235,.35);color:var(--blue);font-weight:500;font-family:'DM Sans',sans-serif;user-select:none;transition:all .15s">🇨🇴 Colombia</div>
+        <div class="pill" id="m-mx" onclick="selectMarket('MX')" style="padding:7px 16px;border-radius:50px;font-size:13px;cursor:pointer;border:0.5px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;user-select:none;transition:all .15s">🇲🇽 México</div>
+        <div class="pill" id="m-es" onclick="selectMarket('ES')" style="padding:7px 16px;border-radius:50px;font-size:13px;cursor:pointer;border:0.5px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;user-select:none;transition:all .15s">🇪🇸 España</div>
+        <div class="pill" id="m-pa" onclick="selectMarket('PA')" style="padding:7px 16px;border-radius:50px;font-size:13px;cursor:pointer;border:0.5px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;user-select:none;transition:all .15s">🌎 Otro</div>
+      </div>
+      <div class="q-hint" id="market-hint" style="margin-top:.5rem">Ticket promedio de comisión: $3,000–$4,500 USD · Comisión estándar 3%</div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-label"><span class="q-text">Tiempo promedio de primera respuesta</span><div class="q-meta"><span class="q-num">04</span><span class="q-val" id="v3">1h 30min</span></div></div>
       <input type="range" min="5" max="240" step="5" value="90" id="s3" oninput="updateMinutes(this.value)">
       <div class="q-hint">Desde que entra el lead hasta que alguien lo contacta</div>
     </div>
     <div class="q-block">
-      <div class="q-label"><span class="q-text">¿Qué % de leads cualificas actualmente?</span><div class="q-meta"><span class="q-num">04</span><span class="q-val" id="v4">40%</span></div></div>
+      <div class="q-label"><span class="q-text">¿Qué % de leads cualificas actualmente?</span><div class="q-meta"><span class="q-num">05</span><span class="q-val" id="v4">40%</span></div></div>
       <input type="range" min="5" max="90" step="5" value="40" id="s4" oninput="document.getElementById('v4').textContent=this.value+'%'">
       <div class="q-hint">Leads que llegan a una conversación real con un agente</div>
     </div>
     <div class="q-block">
-      <div class="q-label"><span class="q-text">Tasa de cierre sobre leads cualificados</span><div class="q-meta"><span class="q-num">05</span><span class="q-val" id="v5">15%</span></div></div>
+      <div class="q-label"><span class="q-text">Tasa de cierre sobre leads cualificados</span><div class="q-meta"><span class="q-num">06</span><span class="q-val" id="v5">15%</span></div></div>
       <input type="range" min="1" max="50" step="1" value="15" id="s5" oninput="document.getElementById('v5').textContent=this.value+(+this.value===50?'%+':'%')">
       <div class="q-hint">Visitas que terminan en operación cerrada</div>
     </div>
     <div class="q-block">
-      <div class="q-label"><span class="q-text">Comisión promedio por operación (USD)</span><div class="q-meta"><span class="q-num">06</span><span class="q-val" id="v6">$3,500</span></div></div>
+      <div class="q-label"><span class="q-text">Comisión promedio por operación (USD)</span><div class="q-meta"><span class="q-num">07</span><span class="q-val" id="v6">$3,500</span></div></div>
       <input type="range" min="500" max="20000" step="500" value="3500" id="s6" oninput="document.getElementById('v6').textContent='$'+Number(this.value).toLocaleString()">
     </div>
     <hr class="q-divider">
@@ -395,6 +406,40 @@ var cachedM = null;
 var analysisReady = false;
 var analysisData = null;
 var analysisError = false;
+
+var currentMarket = 'CO';
+var marketData = {
+  'CO': { label: '🇨🇴 Colombia', hint: 'Ticket promedio de comisión: $3,000–$4,500 USD · Comisión estándar 3%', commMin: 500, commMax: 15000, commDefault: 3500, commStep: 500 },
+  'MX': { label: '🇲🇽 México', hint: 'Ticket promedio de comisión: $5,000–$7,000 USD · Comisión estándar 5%', commMin: 1000, commMax: 25000, commDefault: 5500, commStep: 500 },
+  'ES': { label: '🇪🇸 España', hint: 'Ticket promedio de comisión: $10,000–$12,000 USD · Comisión estándar 5%', commMin: 2000, commMax: 50000, commDefault: 10000, commStep: 1000 },
+  'PA': { label: '🌎 Otro', hint: 'Introduce tu comisión promedio real por operación', commMin: 500, commMax: 50000, commDefault: 5000, commStep: 500 }
+};
+function selectMarket(code) {
+  currentMarket = code;
+  var ids = { CO:'m-co', MX:'m-mx', ES:'m-es', PA:'m-pa' };
+  Object.keys(ids).forEach(function(k) {
+    var el = document.getElementById(ids[k]);
+    if (k === code) {
+      el.style.background = 'var(--blue-light)';
+      el.style.borderColor = 'rgba(37,99,235,.35)';
+      el.style.color = 'var(--blue)';
+      el.style.fontWeight = '500';
+    } else {
+      el.style.background = 'transparent';
+      el.style.borderColor = 'var(--border)';
+      el.style.color = 'var(--muted)';
+      el.style.fontWeight = '400';
+    }
+  });
+  var d = marketData[code];
+  document.getElementById('market-hint').textContent = d.hint;
+  var slider = document.getElementById('s6');
+  slider.min = d.commMin;
+  slider.max = d.commMax;
+  slider.step = d.commStep;
+  slider.value = d.commDefault;
+  document.getElementById('v6').textContent = '$' + Number(d.commDefault).toLocaleString();
+}
 
 function updateMinutes(v) {
   var val = parseInt(v);
