@@ -530,7 +530,9 @@ function showReport() {
 
 function renderReport(m) {
   document.getElementById('generating').style.display = 'none';
-  document.getElementById('results-content').classList.add('show');
+  var rc = document.getElementById('results-content');
+  rc.style.display = 'block';
+  rc.classList.add('show');
 
   document.getElementById('r-loss').textContent = '$' + m.lostMoney.toLocaleString();
   document.getElementById('r-cold').textContent = m.coldLeads;
