@@ -511,19 +511,21 @@ async function generateAnalysis(m, minuteLabel) {
 function showReport() {
   var m = cachedM || calcNumbers();
   document.getElementById('results-wrap').classList.add('show');
+  document.getElementById('generating').style.display = 'block';
+  document.getElementById('results-content').style.display = 'none';
+  setTimeout(function() {
+    document.getElementById('results-wrap').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 100);
 
-  if (analysisReady) {
-    renderReport(m);
-  } else {
-    document.getElementById('generating').style.display = 'block';
-    document.getElementById('results-content').style.display = 'none';
-    var poll = setInterval(function() {
-      if (analysisReady) {
-        clearInterval(poll);
-        renderReport(m);
-      }
-    }, 300);
+  function tryRender() {
+    if (analysisReady) {
+      renderReport(m);
+    } else {
+      setTimeout(tryRender, 400);
+    }
   }
+  tryRender();
+}
 
   setTimeout(function() { document.getElementById('results-wrap').scrollIntoView({behavior:'smooth', block:'start'}); }, 100);
 }
